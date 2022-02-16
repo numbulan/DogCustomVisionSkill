@@ -1,0 +1,9 @@
+{
+    "dependencies": {
+        "botbuilder": "~4.15.0",
+        "botbuilder-dialogs": "~4.15.0",
+        "botframework-connector": "~4.15.0",
+        "dotenv": "~8.2.0",
+        "restify": "~8.6.0"
+    }
+}
