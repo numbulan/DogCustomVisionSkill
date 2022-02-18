@@ -1,6 +1,9 @@
 const { ActivityTypes, EndOfConversationCodes, MessageFactory } = require('botbuilder');
 const { ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
 
+const { HandlePictureDialog, HANDLE_PICTURE_DIALOG } = require('./handlePictureDialog');
+
+const { NoPictureDialog, NO_PICTURE_DIALOG } = require('./noPictureDialog');
 
 
 const MAIN_DIALOG = 'MAIN_DIALOG';
@@ -11,6 +14,8 @@ class MainDialog extends ComponentDialog {
         super(MAIN_DIALOG);
         this.userState = userState;
         
+        this.addDialog(new HandlePictureDialog());
+        this.addDialog(new NoPictureDialog());
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.initialStep.bind(this),
             this.finalStep.bind(this)
@@ -33,11 +38,10 @@ class MainDialog extends ComponentDialog {
     async initialStep(stepContext) {
 
         if (stepContext.context.activity.attachments && stepContext.context.activity.attachments.filter(x => x.contentType != "text/html").length > 0) {
-            await stepContext.context.sendActivity('Attachment');
+            return await stepContext.beginDialog(HANDLE_PICTURE_DIALOG);
         } else {
-            await stepContext.context.sendActivity('no Attachment');
+            return await stepContext.beginDialog(NO_PICTURE_DIALOG);
         }
-        return await stepContext.next();
     }
 
     async finalStep(stepContext) {
