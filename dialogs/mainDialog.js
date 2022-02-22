@@ -23,7 +23,7 @@ class MainDialog extends ComponentDialog {
 
         this.initialDialogId = WATERFALL_DIALOG;
     }
-
+    
     async run(turnContext, accessor) {
         const dialogSet = new DialogSet(accessor);
         dialogSet.add(this);
@@ -36,12 +36,7 @@ class MainDialog extends ComponentDialog {
     }
 
     async initialStep(stepContext) {
-
-        if (stepContext.context.activity.attachments && stepContext.context.activity.attachments.filter(x => x.contentType != "text/html").length > 0) {
-            return await stepContext.beginDialog(HANDLE_PICTURE_DIALOG);
-        } else {
-            return await stepContext.beginDialog(NO_PICTURE_DIALOG);
-        }
+        checkForAttachment();
     }
 
     async finalStep(stepContext) {
@@ -51,6 +46,15 @@ class MainDialog extends ComponentDialog {
             code: EndOfConversationCodes.CompletedSuccessfully
         });
         return await stepContext.cancelAllDialogs();
+    }
+
+}
+
+async function checkForAttachment (){
+    if (stepContext.context.activity.attachments && stepContext.context.activity.attachments.filter(x => x.contentType != "text/html").length > 0) {
+        return await stepContext.beginDialog(HANDLE_PICTURE_DIALOG);
+    } else {
+        return await stepContext.beginDialog(NO_PICTURE_DIALOG);
     }
 }
 
