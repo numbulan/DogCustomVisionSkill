@@ -5,6 +5,7 @@ const PredictionApi = require("@azure/cognitiveservices-customvision-prediction"
 const msRest = require("@azure/ms-rest-js");
 const dotenv = require('dotenv');
 const path = require('path');
+const { count } = require('console');
 
 const ENV_FILE = path.join(__dirname, '.env');
 dotenv.config({ path: ENV_FILE });
@@ -25,6 +26,49 @@ let counter = 0;
 
     let folders = [];
     //Loop through the files for the tags
+    let folder = fs.readdirSync("./images");
+    let size = fs.readdirSync("./images").length;
+    for ( let i = 0; i < size; i++){
+        splitName(folder[i])
+        sleep(1000);
+        console.log(i);
+    }
+
+    async function splitName(name){
+        let tag = name.split("-");
+        tag = tag[1];
+        folders.push(tag);
+        tagName = tag.replaceAll("_", " ");
+        tagObject = await trainer.createTag(sampleProject.id, `${tagName}`);
+        global[tag+"Dir"] = `./images/${name}`;
+        global[tag+"Files"] = fs.readdirSync(`./images/${name}`);
+        await sendPictures(name, tagObject);
+        return;
+    }
+
+    async function sendPictures(name, tagObject){
+        counter +=1;
+        console.log("Adding images... " +counter);
+        let fileUploadPromises = [];
+        let fileCounter=0;
+        fs.readdirSync(`./images/${name}`).forEach(file =>{
+            if(fileCounter % 5 === 0){
+                sleep(1000);
+            }
+            return fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}));  
+        })
+        await Promise.all(fileUploadPromises);
+        console.log("end");
+    }
+
+    function sleep(milliseconds) {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+          currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
+      }
+   /*
     fs.readdirSync("./images").forEach(name => splitName(name));
     const sampleDataRoot = "./images";
 
@@ -33,31 +77,27 @@ let counter = 0;
         tag = tag[1];
         folders.push(tag);
         tagName = tag.replaceAll("_", " ");
-        let tagId = await trainer.createTag(sampleProject.id, `${tagName}`).id;
-        setTimeout(() =>{console.log("wait")}, 1000);
+        //let tagObject = await trainer.createTag(sampleProject.id, `${tagName}`);
+        let tagObject = setTimeout(() =>{createTag(tagName)}, 1000);
         global[tag+"Dir"] = `./images/${name}`;
         global[tag+"Files"] = fs.readdirSync(`./images/${name}`);
-        await sendPictures(name, tagId);
-        /*
-        await eval('const ' + tag + "Tag" +'= trainer.createTag(sampleProject.id, `${tagName}`)');
-        await eval('const ' + tag + "Dir" +'=  route');
-        await eval('const ' + tag + "Files" +'= fs.readdirSync(`${tag+"Dir"}`)');*/
-
+        await sendPictures(name, tagObject);
         return;
     }
     
-    async function sendPictures(name, tagId){
+    async function sendPictures(name, tagObject){
         counter +=1;
         console.log("Adding images..." + counter);
-    
         let fileUploadPromises = [];
         fs.readdirSync(`./images/${name}`).forEach(file =>{
-            setTimeout(() =>{console.log("wait")}, 1000);
-            return  fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagId]}));
+            return setTimeout(() =>{fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}))}, 1000);  
         })
         await Promise.all(fileUploadPromises);
         console.log("end");
     }
 
-
+    async function createTag(tagName){
+       return tagObject = await trainer.createTag(sampleProject.id, `${tagName}`);
+    }
+    */
 })()
