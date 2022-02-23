@@ -1,5 +1,4 @@
 const { ActivityHandler } = require ('botbuilder');
-const { TaskModuleMessageResponse } = require('botframework-connector/lib/teams/models/mappers');
 
 class DogCustomVisionBot extends ActivityHandler {
     constructor ( conversationState, userState, dialog){
@@ -17,7 +16,7 @@ class DogCustomVisionBot extends ActivityHandler {
             console.log('Running dialog with Message Activity.');
 
             await this.dialog.run(context, this.dialogState);
-
+            console.log("you there")
             await next();
         });
 

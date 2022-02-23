@@ -1,8 +1,13 @@
 const { ComponentDialog, WaterfallDialog } = require('botbuilder-dialogs');
 
 const axios = require('axios');
+const dotenv = require('dotenv');
+const path = require('path');
 
-const HANDLE_PICTURE_DIALOG = 'HANDLE_ATTACHMENT_DIALOG';
+const ENV_FILE = path.join(__dirname, '.env');
+dotenv.config({ path: ENV_FILE });
+
+const HANDLE_PICTURE_DIALOG = 'HANDLE_PICTURE_DIALOG';
 
 const WATERFALL_DIALOG = 'WATTERFALL_DIALOG';
 
@@ -25,7 +30,26 @@ class HandlePictureDialog extends ComponentDialog {
     }
 
     async sendToCustomVisionStep(stepContext) {
-//Send to cv
+        /*
+        let response = await axios({
+            method: 'post',
+            url: process.env.predictionEndpoint,
+            headers: {
+                "Prediction-Key": process.env.predictionKey,
+                "Content-Type": "application/json"
+            },
+            data: {
+                Url: stepContext.context.activity.attachments[0].content.downloadUrl
+            }
+        })
+            .then(async (response) => {
+                await stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + response.data.predictions[0].probability + " probability");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+            console.log(response.data)
+            await stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + response.data.predictions[0].probability + " probability");*/
         return await stepContext.next();
     }
 

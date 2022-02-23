@@ -5,8 +5,7 @@
         "upload": "node ./uploadPictures.js"
     },
     "dependencies": {
-        "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
-        "@azure/cognitiveservices-customvision-training": "^5.2.0",
+        "axios": "^0.26.0",
         "botbuilder": "~4.15.0",
         "botbuilder-dialogs": "~4.15.0",
         "botframework-connector": "~4.15.0",
@@ -14,6 +13,8 @@
         "restify": "~8.6.0"
     },
     "devDependencies": {
+        "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
+        "@azure/cognitiveservices-customvision-training": "^5.2.0",
         "jest": "^27.4.7"
     }
 }

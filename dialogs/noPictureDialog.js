@@ -17,14 +17,17 @@ class NoPictureDialog extends ComponentDialog {
     }
 
     async initStep(stepContext) {
-        // Continue using the same selection list, if any, from the previous iteration of this dialog.
-        await stepContext.context.sendActivity('No Attachment, please upload an image.');
+        sendText(stepContext);
         return await stepContext.next();
     }
 
     async finalStep(stepContext) {
         return await stepContext.endDialog();
     }
+}
+
+async function sendText(stepContext){
+    await stepContext.context.sendActivity('No Attachment, please upload an image.');
 }
 
 module.exports.NoPictureDialog = NoPictureDialog;

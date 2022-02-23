@@ -12,18 +12,15 @@ dotenv.config({ path: ENV_FILE });
 
 const trainingKey = process.env.trainingKey;
 const trainingEndpoint = process.env.trainingEndpoint;
-const predictionKey = process.env.predictionKey;
-const predictionResourceId = process.env.predictionResourceId;
-const predictionEndpoint = process.env.predictionEndpoint;
+const projectNumber = process.env.projectNumber;
 
 const credentials = new msRest.ApiKeyCredentials({ inHeader: { "Training-key": trainingKey } });
 const trainer = new TrainingApi.TrainingAPIClient(credentials, trainingEndpoint);
-const predictor_credentials = new msRest.ApiKeyCredentials({ inHeader: { "Prediction-key": predictionKey } });
-const predictor = new PredictionApi.PredictionAPIClient(predictor_credentials, predictionEndpoint);
+
 let counter = 0;
 
 (async () => {
-    const sampleProject = await trainer.getProject("5a2e5bd2-0aba-46c3-ba7f-10e442522c6f")
+    const sampleProject = await trainer.getProject(projectNumber)
 
 
     let folders = [];
@@ -40,7 +37,7 @@ let counter = 0;
         setTimeout(() =>{console.log("wait")}, 1000);
         global[tag+"Dir"] = `./images/${name}`;
         global[tag+"Files"] = fs.readdirSync(`./images/${name}`);
-        sendPictures(name, tagId);
+        await sendPictures(name, tagId);
         /*
         await eval('const ' + tag + "Tag" +'= trainer.createTag(sampleProject.id, `${tagName}`)');
         await eval('const ' + tag + "Dir" +'=  route');
@@ -55,7 +52,8 @@ let counter = 0;
     
         let fileUploadPromises = [];
         fs.readdirSync(`./images/${name}`).forEach(file =>{
-                fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagId]}));
+            setTimeout(() =>{console.log("wait")}, 1000);
+            return  fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagId]}));
         })
         await Promise.all(fileUploadPromises);
         console.log("end");

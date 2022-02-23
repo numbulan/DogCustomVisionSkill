@@ -1,4 +1,4 @@
-const { ActivityTypes, EndOfConversationCodes, MessageFactory } = require('botbuilder');
+const { ActivityTypes, EndOfConversationCodes, ConsoleTranscriptLogger, MessageFactory } = require('botbuilder');
 const { ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
 
 const { HandlePictureDialog, HANDLE_PICTURE_DIALOG } = require('./handlePictureDialog');
@@ -30,32 +30,33 @@ class MainDialog extends ComponentDialog {
 
         const dialogContext = await dialogSet.createContext(turnContext);
         const results = await dialogContext.continueDialog();
+        console.log(results);
         if (results.status === DialogTurnStatus.empty) {
             await dialogContext.beginDialog(this.id);
         }
     }
 
     async initialStep(stepContext) {
-        checkForAttachment();
+        return checkForAttachment(stepContext);
     }
 
     async finalStep(stepContext) {
-        await stepContext.context.sendActivity(MessageFactory.text("Leave Skill"))
-        await stepContext.context.sendActivity({
-            type: ActivityTypes.EndOfConversation,
-            code: EndOfConversationCodes.CompletedSuccessfully
-        });
+        sendText(stepContext);
         return await stepContext.cancelAllDialogs();
     }
 
 }
 
-async function checkForAttachment (){
+async function checkForAttachment (stepContext){
     if (stepContext.context.activity.attachments && stepContext.context.activity.attachments.filter(x => x.contentType != "text/html").length > 0) {
         return await stepContext.beginDialog(HANDLE_PICTURE_DIALOG);
     } else {
         return await stepContext.beginDialog(NO_PICTURE_DIALOG);
     }
+}
+
+async function sendText(stepContext){
+    await stepContext.context.sendActivity(MessageFactory.text("Leave Skill"));
 }
 
 module.exports.MainDialog = MainDialog;
