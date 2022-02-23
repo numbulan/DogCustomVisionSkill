@@ -40,7 +40,13 @@ class MainDialog extends ComponentDialog {
     }
 
     async finalStep(stepContext) {
-        await sendText(stepContext);
+        /*
+        for use in rootbot
+        await stepContext.context.sendActivity({
+            type: ActivityTypes.EndOfConversation,
+            code: EndOfConversationCodes.CompletedSuccessfully
+        });
+        */
         return await stepContext.cancelAllDialogs();
     }
 
@@ -52,10 +58,6 @@ async function checkForAttachment (stepContext){
     } else {
         return await stepContext.beginDialog(NO_PICTURE_DIALOG);
     }
-}
-
-async function sendText(stepContext){
-    await stepContext.context.sendActivity(MessageFactory.text("Leave Skill"));
 }
 
 module.exports.MainDialog = MainDialog;

@@ -26,7 +26,7 @@ class HandlePictureDialog extends ComponentDialog {
     }
 
     async initStep(stepContext) {
-        await stepContext.context.sendActivity('handlePictureDialog');
+        await stepContext.context.sendActivity('I will analyse your picture...');
         return await stepContext.next();
     }
 
