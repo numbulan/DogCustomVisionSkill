@@ -3,6 +3,7 @@ const { ComponentDialog, WaterfallDialog } = require('botbuilder-dialogs');
 const axios = require('axios');
 const dotenv = require('dotenv');
 const path = require('path');
+const { createContext } = require('vm');
 
 const ENV_FILE = path.join(__dirname, '.env');
 dotenv.config({ path: ENV_FILE });
@@ -30,24 +31,34 @@ class HandlePictureDialog extends ComponentDialog {
     }
 
     async sendToCustomVisionStep(stepContext) {
-        let response = await axios({
-            method: 'post',
-            url: process.env.predictionEndpoint,
-            headers: {
-                "Prediction-Key": process.env.predictionKey,
-                "Content-Type": "application/json"
-            },
-            data: {
-                Url: stepContext.context.activity.attachments[0].content.downloadUrl
-            }
-        })
-            await stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + response.data.predictions[0].probability + " probability");
+        let response = await sendRequest(stepContext);
+        await createText(response, stepContext);
         return await stepContext.next();
     }
 
     async finalStep(stepContext) {
         return await stepContext.endDialog();
     }
+
+}
+
+async function sendRequest(stepContext){
+    return await axios({
+        method: 'post',
+        url: process.env.predictionEndpoint,
+        headers: {
+            "Prediction-Key": process.env.predictionKey,
+            "Content-Type": "application/json"
+        },
+        data: {
+            Url: stepContext.context.activity.attachments[0].content.downloadUrl
+        }
+    })
+}
+
+async function createText(response, stepContext){
+    const percent= response.data.predictions[0].probability.toFixed(4)*100;
+    stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + percent + "% probability");
 }
 
 module.exports.HandlePictureDialog = HandlePictureDialog;

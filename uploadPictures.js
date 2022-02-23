@@ -57,8 +57,9 @@ let counter = 0;
                 sleep(1000);
             }
             console.log("File-Counter: "+ fileCounter);
-            return fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}));  
+            return fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}));
         })
+        console.log("end of file "+ name)
         await Promise.all(fileUploadPromises);
         console.log("end");
     }
@@ -69,7 +70,7 @@ let counter = 0;
         do {
           currentDate = Date.now();
         } while (currentDate - date < milliseconds);
-      }
+    }
    /*
     fs.readdirSync("./images").forEach(name => splitName(name));
     const sampleDataRoot = "./images";
