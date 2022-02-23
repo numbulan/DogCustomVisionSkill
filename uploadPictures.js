@@ -52,9 +52,11 @@ let counter = 0;
         let fileUploadPromises = [];
         let fileCounter=0;
         fs.readdirSync(`./images/${name}`).forEach(file =>{
+            fileCounter+=1;
             if(fileCounter % 5 === 0){
                 sleep(1000);
             }
+            console.log("File-Counter: "+ fileCounter);
             return fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}));  
         })
         await Promise.all(fileUploadPromises);
