@@ -17,7 +17,7 @@ class NoPictureDialog extends ComponentDialog {
     }
 
     async initStep(stepContext) {
-        sendText(stepContext);
+        await sendText(stepContext);
         return await stepContext.next();
     }
 

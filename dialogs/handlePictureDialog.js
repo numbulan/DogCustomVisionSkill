@@ -30,7 +30,6 @@ class HandlePictureDialog extends ComponentDialog {
     }
 
     async sendToCustomVisionStep(stepContext) {
-        /*
         let response = await axios({
             method: 'post',
             url: process.env.predictionEndpoint,
@@ -42,14 +41,7 @@ class HandlePictureDialog extends ComponentDialog {
                 Url: stepContext.context.activity.attachments[0].content.downloadUrl
             }
         })
-            .then(async (response) => {
-                await stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + response.data.predictions[0].probability + " probability");
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-            console.log(response.data)
-            await stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + response.data.predictions[0].probability + " probability");*/
+            await stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + response.data.predictions[0].probability + " probability");
         return await stepContext.next();
     }
 

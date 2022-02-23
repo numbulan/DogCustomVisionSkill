@@ -16,7 +16,6 @@ class DogCustomVisionBot extends ActivityHandler {
             console.log('Running dialog with Message Activity.');
 
             await this.dialog.run(context, this.dialogState);
-            console.log("you there")
             await next();
         });
 

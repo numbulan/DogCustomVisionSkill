@@ -30,18 +30,17 @@ class MainDialog extends ComponentDialog {
 
         const dialogContext = await dialogSet.createContext(turnContext);
         const results = await dialogContext.continueDialog();
-        console.log(results);
         if (results.status === DialogTurnStatus.empty) {
             await dialogContext.beginDialog(this.id);
         }
     }
 
     async initialStep(stepContext) {
-        return checkForAttachment(stepContext);
+        return await checkForAttachment(stepContext);
     }
 
     async finalStep(stepContext) {
-        sendText(stepContext);
+        await sendText(stepContext);
         return await stepContext.cancelAllDialogs();
     }
 
