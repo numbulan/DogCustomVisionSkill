@@ -7,10 +7,8 @@
     "publisherName": "CoSo",
     "privacyUrl": "https://www.corporatesoftware.ch/privacy-policy-imprint",
     "copyright": "Copyright (c) Corporate Software AG. All rights reserved.",
-    "license": "MIT",
-    "iconUrl": "<IMG_URL>",
     "tags": [
-        "sample",
+        "dog",
         "custom vision"
     ]
 }

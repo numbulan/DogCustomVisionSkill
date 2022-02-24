@@ -26,6 +26,10 @@ dotenv.config({ path: ENV_FILE });
 
 const { DogCustomVisionBot } = require('./bot');
 
+const SKILLERROR = 'The skill encountered an error or bug.';
+const INFORMPROVIDER = 'Please inform your bot provider of your error';
+
+
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
@@ -83,10 +87,10 @@ adapter.onTurnError = async (context, error) => {
 
 async function sendErrorMessage(context, error) {
     try {
-        let onTurnErrorMessage = 'The skill encountered an error or bug.';
+        let onTurnErrorMessage = SKILLERROR;
         await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
 
-        onTurnErrorMessage = 'To continue to run this bot, please fix the bot source code.';
+        onTurnErrorMessage = INFORMPROVIDER;
         await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
         await context.sendTraceActivity('OnTurnError Trace', error.toString(), 'https://www.botframework.com/schemas/error', 'TurnError');
     } catch (err) {
@@ -97,8 +101,6 @@ async function sendErrorMessage(context, error) {
 
 async function sendEoCToParent(context, error) {
     try {
-        // Send an EndOfConversation activity to the skill caller with the error to end the conversation,
-        // and let the caller decide what to do.
         const endOfConversation = {
             type: ActivityTypes.EndOfConversation,
             code: 'SkillError',

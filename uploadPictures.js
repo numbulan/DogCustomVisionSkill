@@ -49,7 +49,7 @@ let counter = 0;
     async function sendPictures(name, tagObject){
         counter +=1;
         console.log("Adding images... " +counter);
-        let fileUploadPromises = [];
+        //let fileUploadPromises = [];
         let fileCounter=0;
         fs.readdirSync(`./images/${name}`).forEach(file =>{
             fileCounter+=1;
@@ -57,10 +57,10 @@ let counter = 0;
                 sleep(1000);
             }
             console.log("File-Counter: "+ fileCounter);
-            return fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}));
+            await trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]});
         })
         console.log("end of file "+ name)
-        await Promise.all(fileUploadPromises);
+        //await Promise.all(fileUploadPromises);
         console.log("end");
     }
 
@@ -71,36 +71,4 @@ let counter = 0;
           currentDate = Date.now();
         } while (currentDate - date < milliseconds);
     }
-   /*
-    fs.readdirSync("./images").forEach(name => splitName(name));
-    const sampleDataRoot = "./images";
-
-    async function splitName(name){
-        let tag = name.split("-");
-        tag = tag[1];
-        folders.push(tag);
-        tagName = tag.replaceAll("_", " ");
-        //let tagObject = await trainer.createTag(sampleProject.id, `${tagName}`);
-        let tagObject = setTimeout(() =>{createTag(tagName)}, 1000);
-        global[tag+"Dir"] = `./images/${name}`;
-        global[tag+"Files"] = fs.readdirSync(`./images/${name}`);
-        await sendPictures(name, tagObject);
-        return;
-    }
-    
-    async function sendPictures(name, tagObject){
-        counter +=1;
-        console.log("Adding images..." + counter);
-        let fileUploadPromises = [];
-        fs.readdirSync(`./images/${name}`).forEach(file =>{
-            return setTimeout(() =>{fileUploadPromises.push(trainer.createImagesFromData(sampleProject.id, fs.readFileSync(`./images/${name}/${file}`), {tagIds: [tagObject.id]}))}, 1000);  
-        })
-        await Promise.all(fileUploadPromises);
-        console.log("end");
-    }
-
-    async function createTag(tagName){
-       return tagObject = await trainer.createTag(sampleProject.id, `${tagName}`);
-    }
-    */
 })()

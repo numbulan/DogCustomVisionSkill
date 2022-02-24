@@ -9,8 +9,12 @@ const ENV_FILE = path.join(__dirname, '.env');
 dotenv.config({ path: ENV_FILE });
 
 const HANDLE_PICTURE_DIALOG = 'HANDLE_PICTURE_DIALOG';
-
-const WATERFALL_DIALOG = 'WATTERFALL_DIALOG';
+const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
+const ContentTypeApplication = "application/json";
+const textAnalyseStart = 'I will analyse your picture...';
+const probability = "% probability";
+const with_an = " with an ";
+const methodeForAxios = 'post';
 
 class HandlePictureDialog extends ComponentDialog {
     constructor() {
@@ -26,13 +30,13 @@ class HandlePictureDialog extends ComponentDialog {
     }
 
     async initStep(stepContext) {
-        await stepContext.context.sendActivity('I will analyse your picture...');
+        await stepContext.context.sendActivity(textAnalyseStart);
         return await stepContext.next();
     }
 
     async sendToCustomVisionStep(stepContext) {
-        let response = await sendRequest(stepContext);
-        await createText(response, stepContext);
+        let response = await sendPictureRequestToCustomVision(stepContext);
+        await createResponseTextFromData(response, stepContext);
         return await stepContext.next();
     }
 
@@ -42,13 +46,13 @@ class HandlePictureDialog extends ComponentDialog {
 
 }
 
-async function sendRequest(stepContext){
+async function sendPictureRequestToCustomVision(stepContext){
     return await axios({
-        method: 'post',
+        method: methodeForAxios,
         url: process.env.predictionEndpoint,
         headers: {
             "Prediction-Key": process.env.predictionKey,
-            "Content-Type": "application/json"
+            "Content-Type": ContentTypeApplication
         },
         data: {
             Url: stepContext.context.activity.attachments[0].content.downloadUrl
@@ -56,9 +60,9 @@ async function sendRequest(stepContext){
     })
 }
 
-async function createText(response, stepContext){
+async function createResponseTextFromData(response, stepContext){
     const percent= response.data.predictions[0].probability.toFixed(4)*100;
-    stepContext.context.sendActivity(response.data.predictions[0].tagName + " with an " + percent + "% probability");
+    stepContext.context.sendActivity(response.data.predictions[0].tagName + with_an + percent + probability);
 }
 
 module.exports.HandlePictureDialog = HandlePictureDialog;

@@ -1,8 +1,8 @@
 const { ComponentDialog, WaterfallDialog } = require('botbuilder-dialogs');
 
 const NO_PICTURE_DIALOG = 'NO_PICTURE_DIALOG';
-
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
+const PHRASE = 'No Attachment, please upload an image.';
 
 class NoPictureDialog extends ComponentDialog {
     constructor(){
@@ -10,6 +10,7 @@ class NoPictureDialog extends ComponentDialog {
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.initStep.bind(this),
+            this.requestPictureStep.bind(this),
             this.finalStep.bind(this)
         ]));
 
@@ -17,8 +18,11 @@ class NoPictureDialog extends ComponentDialog {
     }
 
     async initStep(stepContext) {
-        await sendText(stepContext);
         return await stepContext.next();
+    }
+
+    async requestPictureStep(stepContext){
+        await sendRequestForPictureToUser(stepContext,PHRASE)
     }
 
     async finalStep(stepContext) {
@@ -26,8 +30,8 @@ class NoPictureDialog extends ComponentDialog {
     }
 }
 
-async function sendText(stepContext){
-    await stepContext.context.sendActivity('No Attachment, please upload an image.');
+async function sendRequestForPictureToUser(stepContext, PHRASE){
+    await stepContext.context.sendActivity(PHRASE);
 }
 
 module.exports.NoPictureDialog = NoPictureDialog;
