@@ -22,7 +22,8 @@ class NoPictureDialog extends ComponentDialog {
     }
 
     async requestPictureStep(stepContext){
-        await sendRequestForPictureToUser(stepContext,PHRASE)
+        await sendRequestForPictureToUser(stepContext,PHRASE);
+        return await stepContext.next();
     }
 
     async finalStep(stepContext) {
