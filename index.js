@@ -26,6 +26,10 @@ dotenv.config({ path: ENV_FILE });
 
 const { DogCustomVisionBot } = require('./bot');
 
+const SKILLERROR = 'The skill encountered an error or bug.';
+const INFORMPROVIDER = 'Please inform your bot provider of your error';
+
+
 const server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
@@ -73,6 +77,40 @@ const dialog = new MainDialog(userState);
 
 const myBot = new DogCustomVisionBot(conversationalState, userState, dialog);
 
+// writes errors to consol log
+adapter.onTurnError = async (context, error) => {
+    console.error(`\n [onTurnError] unhandled error: ${error}`);
+
+    await sendErrorMessage(context, error);
+    await sendEoCToParent(context, error);
+};
+
+async function sendErrorMessage(context, error) {
+    try {
+        let onTurnErrorMessage = SKILLERROR;
+        await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
+
+        onTurnErrorMessage = INFORMPROVIDER;
+        await context.sendActivity(onTurnErrorMessage, onTurnErrorMessage, InputHints.ExpectingInput);
+        await context.sendTraceActivity('OnTurnError Trace', error.toString(), 'https://www.botframework.com/schemas/error', 'TurnError');
+    } catch (err) {
+        console.error(`\n [onTurnError] Exception caught in sendErrorMessage: ${err}`);
+    }
+}
+
+
+async function sendEoCToParent(context, error) {
+    try {
+        const endOfConversation = {
+            type: ActivityTypes.EndOfConversation,
+            code: 'SkillError',
+            text: error.toString()
+        };
+        await context.sendActivity(endOfConversation);
+    } catch (err) {
+        console.error(`\n [onTurnError] Exception caught in sendEoCToParent: ${err}`);
+    }
+}
 server.post('/api/messages', async (req, res) => {
     await adapter.process(req, res, (context) => myBot.run(context));
 });

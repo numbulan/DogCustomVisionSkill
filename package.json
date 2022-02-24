@@ -1,9 +1,11 @@
 {
     "scripts": {
         "start": "node ./index.js",
-        "test": "jest --watch"
+        "test": "nyc mocha tests/**/*.test.js",
+        "upload": "node ./uploadPictures.js"
     },
     "dependencies": {
+        "axios": "^0.26.0",
         "botbuilder": "~4.15.0",
         "botbuilder-dialogs": "~4.15.0",
         "botframework-connector": "~4.15.0",
@@ -11,6 +13,11 @@
         "restify": "~8.6.0"
     },
     "devDependencies": {
-        "jest": "^27.4.7"
+        "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
+        "@azure/cognitiveservices-customvision-training": "^5.2.0",
+        "botbuilder-testing": "^4.15.0",
+        "jest": "^27.4.7",
+        "mocha": "^9.2.1",
+        "nyc": "^15.1.0"
     }
 }
