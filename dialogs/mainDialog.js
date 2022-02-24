@@ -40,11 +40,14 @@ class MainDialog extends ComponentDialog {
     }
 
     async finalStep(stepContext) {
-        /*for use in rootbot
+        try {
         await stepContext.context.sendActivity({
             type: ActivityTypes.EndOfConversation,
             code: EndOfConversationCodes.CompletedSuccessfully
-        });*/
+        });}
+        catch(err){
+            console.log(err);
+        }
         return await stepContext.cancelAllDialogs();
     }
 
