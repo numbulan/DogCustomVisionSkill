@@ -10,5 +10,14 @@
     "tags": [
         "dog",
         "custom vision"
+    ],
+    "endpoints": [
+        {
+            "name": "PROD",
+            "protocol": "BotFrameworkV3",
+            "description": "Production endpoint for DogCustomVisionSkill",
+            "endpointUrl": "https://dogcutsomvision.azurewebsites.net/api/messages",
+            "msAppId": "8f822de0-e9e5-45b2-86ae-0d92920b21a3"
+        }
     ]
 }
