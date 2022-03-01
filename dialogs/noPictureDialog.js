@@ -2,7 +2,7 @@ const { ComponentDialog, WaterfallDialog } = require('botbuilder-dialogs');
 
 const NO_PICTURE_DIALOG = 'NO_PICTURE_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
-const PHRASE = 'No Attachment, please upload an image.';
+const NO_ATTACHMENT_PHRASE = 'No Attachment, please upload an image.';
 
 /*
 dialog for the case when no picture was sent to the skill
@@ -25,7 +25,7 @@ class NoPictureDialog extends ComponentDialog {
     }
 
     async requestPictureStep(stepContext){
-        await stepContext.context.sendActivity(PHRASE);
+        await stepContext.context.sendActivity(NO_ATTACHMENT_PHRASE);
         return await stepContext.next();
     }
 

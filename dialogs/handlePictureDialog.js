@@ -10,11 +10,9 @@ dotenv.config({ path: ENV_FILE });
 
 const HANDLE_PICTURE_DIALOG = 'HANDLE_PICTURE_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
-const Content_Type_Application = "application/json";
 const TEXT_ANALYSE_START = 'I will analyse your picture...';
 const PROBABILITY = "% probability";
 const WITH_AN = " with an ";
-const METHODE_FOR_AXIOS = 'post';
 const PREDICTION_KEY = process.env.predictionKey;
 const PREDICTION_ENDPOINT = process.env.predictionEndpoint;
 
@@ -59,16 +57,19 @@ sends the picture to the custom vison and returns the received answer
 */
 async function sendPictureRequestToCustomVision(pictureUrl){
     return await axios({
-        method: METHODE_FOR_AXIOS,
+        method: "post",
         url: PREDICTION_ENDPOINT,
         headers: {
             "Prediction-Key": PREDICTION_KEY,
-            "Content-Type": Content_Type_Application
+            "Content-Type": "application/json"
         },
         data: {
             Url: pictureUrl
         }
     })
+    .catch((error) =>{
+        console.log(error);
+    });
 }
 
 /*
@@ -78,7 +79,8 @@ receives the response object and creates a response text from it
 */
 async function createResponseTextFromData(response){
     const percent= response.data.predictions[0].probability.toFixed(4)*100;
-    return response.data.predictions[0].tagName + WITH_AN + percent + PROBABILITY;
+    const tagName = response.data.predictions[0].tagName;
+    return tagName + WITH_AN + percent + PROBABILITY;
 }
 
 module.exports.HandlePictureDialog = HandlePictureDialog;
