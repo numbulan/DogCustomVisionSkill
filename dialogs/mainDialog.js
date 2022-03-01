@@ -9,6 +9,9 @@ const { NoPictureDialog, NO_PICTURE_DIALOG } = require('./noPictureDialog');
 const MAIN_DIALOG = 'MAIN_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 
+/*
+starting dialog of the bot. determins to which dialog to send the incoming message
+*/
 class MainDialog extends ComponentDialog {
     constructor(userState){
         super(MAIN_DIALOG);
@@ -36,7 +39,13 @@ class MainDialog extends ComponentDialog {
     }
 
     async initialStep(stepContext) {
-        return await checkForAttachment(stepContext);
+        if(await checkForAttachment(stepContext.context.activity.attachments)){
+            return await stepContext.beginDialog(HANDLE_PICTURE_DIALOG);
+        }
+        else{
+            return await stepContext.beginDialog(NO_PICTURE_DIALOG);
+        }
+
     }
 
     async finalStep(stepContext) {
@@ -53,11 +62,16 @@ class MainDialog extends ComponentDialog {
 
 }
 
-async function checkForAttachment (stepContext){
-    if (stepContext.context.activity.attachments && stepContext.context.activity.attachments.filter(x => x.contentType != "text/html").length > 0) {
-        return await stepContext.beginDialog(HANDLE_PICTURE_DIALOG);
+/*
+checkst if there is an attachment, that is not a text or html file
+@param attachments attachments of the messages
+@return true or false
+*/
+async function checkForAttachment (attachmentsOfMessage){
+    if (attachmentsOfMessage && attachmentsOfMessage.filter(x => x.contentType != "text/html").length > 0) {
+        return true;
     } else {
-        return await stepContext.beginDialog(NO_PICTURE_DIALOG);
+        return false;
     }
 }
 

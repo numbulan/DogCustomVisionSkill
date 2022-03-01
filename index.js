@@ -1,3 +1,7 @@
+/*
+starting script of the application, that creates the necessary ressources
+*/
+
 const dotenv = require('dotenv');
 const path = require('path');
 const restify = require('restify');

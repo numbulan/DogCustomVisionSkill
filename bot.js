@@ -1,5 +1,8 @@
 const { ActivityHandler } = require ('botbuilder');
 
+/*
+DogCustomVisoinBot is an activity handler, that can call the diffrent dialogs.
+*/
 class DogCustomVisionBot extends ActivityHandler {
     constructor ( conversationState, userState, dialog){
         super();

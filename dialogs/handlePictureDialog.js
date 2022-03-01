@@ -10,11 +10,17 @@ dotenv.config({ path: ENV_FILE });
 
 const HANDLE_PICTURE_DIALOG = 'HANDLE_PICTURE_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
-const ContentTypeApplication = "application/json";
-const textAnalyseStart = 'I will analyse your picture...';
-const probability = "% probability";
-const with_an = " with an ";
-const methodeForAxios = 'post';
+const Content_Type_Application = "application/json";
+const TEXT_ANALYSE_START = 'I will analyse your picture...';
+const PROBABILITY = "% probability";
+const WITH_AN = " with an ";
+const METHODE_FOR_AXIOS = 'post';
+const PREDICTION_KEY = process.env.predictionKey;
+const PREDICTION_ENDPOINT = process.env.predictionEndpoint;
+
+/*
+dialog that hadles a messge that contains a picture and sends it to the custom vision
+*/
 
 class HandlePictureDialog extends ComponentDialog {
     constructor() {
@@ -30,13 +36,13 @@ class HandlePictureDialog extends ComponentDialog {
     }
 
     async initStep(stepContext) {
-        await stepContext.context.sendActivity(textAnalyseStart);
+        await stepContext.context.sendActivity(TEXT_ANALYSE_START);
         return await stepContext.next();
     }
 
     async sendToCustomVisionStep(stepContext) {
-        let response = await sendPictureRequestToCustomVision(stepContext);
-        await createResponseTextFromData(response, stepContext);
+        let response = await sendPictureRequestToCustomVision(stepContext.context.activity.attachments[0].content.downloadUrl);
+        await stepContext.context.sendActivity(await createResponseTextFromData(response));
         return await stepContext.next();
     }
 
@@ -46,23 +52,33 @@ class HandlePictureDialog extends ComponentDialog {
 
 }
 
-async function sendPictureRequestToCustomVision(stepContext){
+/*
+sends the picture to the custom vison and returns the received answer
+@param pictureUrl download Url of the picture that will be send to the custom vision
+@return response-object from the custom vision 
+*/
+async function sendPictureRequestToCustomVision(pictureUrl){
     return await axios({
-        method: methodeForAxios,
-        url: process.env.predictionEndpoint,
+        method: METHODE_FOR_AXIOS,
+        url: PREDICTION_ENDPOINT,
         headers: {
-            "Prediction-Key": process.env.predictionKey,
-            "Content-Type": ContentTypeApplication
+            "Prediction-Key": PREDICTION_KEY,
+            "Content-Type": Content_Type_Application
         },
         data: {
-            Url: stepContext.context.activity.attachments[0].content.downloadUrl
+            Url: pictureUrl
         }
     })
 }
 
-async function createResponseTextFromData(response, stepContext){
+/*
+receives the response object and creates a response text from it
+@param response response-object from the custom vision
+@return string with the respons to the user
+*/
+async function createResponseTextFromData(response){
     const percent= response.data.predictions[0].probability.toFixed(4)*100;
-    stepContext.context.sendActivity(response.data.predictions[0].tagName + with_an + percent + probability);
+    return response.data.predictions[0].tagName + WITH_AN + percent + PROBABILITY;
 }
 
 module.exports.HandlePictureDialog = HandlePictureDialog;
