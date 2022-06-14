@@ -1,22 +1,24 @@
 {
-    "scripts": {
-        "start": "node ./index.js",
-        "test": "nyc mocha tests/**/*.test.js",
-        "upload": "node ./uploadPictures.js"
-    },
-    "dependencies": {
-        "axios": "^0.26.0",
-        "botbuilder": "~4.15.0",
-        "botbuilder-dialogs": "~4.15.0",
-        "botframework-connector": "~4.15.0",
-        "dotenv": "~8.2.0",
-        "restify": "~8.6.0"
-    },
-    "devDependencies": {
-        "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
-        "@azure/cognitiveservices-customvision-training": "^5.2.0",
-        "botbuilder-testing": "^4.15.0",
-        "mocha": "^9.2.1",
-        "nyc": "^15.1.0"
-    }
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "nyc mocha tests/**/*.test.js",
+    "upload": "node ./uploadPicturesTry.js",
+    "fixing": "node ./fixing.js"
+  },
+  "dependencies": {
+    "axios": "^0.26.0",
+    "botbuilder": "~4.15.0",
+    "botbuilder-dialogs": "~4.15.0",
+    "botframework-connector": "~4.15.0",
+    "dotenv": "~8.2.0",
+    "restify": "~8.6.0",
+    "throttled-queue": "^2.1.4"
+  },
+  "devDependencies": {
+    "@azure/cognitiveservices-customvision-prediction": "^5.1.2",
+    "@azure/cognitiveservices-customvision-training": "^5.2.0",
+    "botbuilder-testing": "^4.15.0",
+    "mocha": "^9.2.1",
+    "nyc": "^15.1.0"
+  }
 }
