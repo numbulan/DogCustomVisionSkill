@@ -10,10 +10,9 @@ const throttledQueue = require("throttled-queue");
 const ENV_FILE = path.join(__dirname, ".env");
 dotenv.config({ path: ENV_FILE });
 
-const TRAINING_KEY = "8a5ab94436364051ad63c9dd6d8afe40";
-const TRAINING_ENDPOINT =
-  "https://customvisiondogbreed.cognitiveservices.azure.com/";
-const PROJECT_NUMBER = "8e1119b4-96d9-4676-9814-cc71b4b26aa7";
+const TRAINING_KEY = process.env.trainingKey;
+const TRAINING_ENDPOINT = process.env.trainingEndpoint;
+const PROJECT_NUMBER = process.env.projectNumber;
 
 const CREDENTIALS = new msRest.ApiKeyCredentials({
   inHeader: { "Training-key": TRAINING_KEY },

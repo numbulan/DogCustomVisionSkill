@@ -2,7 +2,7 @@
   "scripts": {
     "start": "node ./index.js",
     "test": "nyc mocha tests/**/*.test.js",
-    "upload": "node ./uploadPicturesTry.js",
+    "upload": "node ./uploadSkript.js",
     "fixing": "node ./fixing.js"
   },
   "dependencies": {
